@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>修改文章</title>
+    <link rel="stylesheet" href="../static/editormd/css/editormd.css"/>
+    <link rel="stylesheet" href="../static/layui/css/layui.css"/>
+    <script src="../static/js/jQuery.js"></script>
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/editormd/editormd.min.js"></script>
+</head>
+<body>
+<!--将id,标题，内容全放在表单内，最后由ajax提交，爆红不影响运行！！！！只是没注释而已-->
+<form class="layui-form" id="form" lay-filter="editfilter">
+    <a href="/Blog" class="layui-btn">返回文章列表</a>
+    <div class="layui-form-item">
+<!--        文章id-->
+        <label class="layui-form-label">文章ID</label>
+        <div class="layui-input-block">
+            <input type="text" name="id" id="id" disabled class="layui-input" th:value="${myblogs.id}">
+        </div>
+    </div>
+<!--    标题-->
+    <div class="layui-form-item" style="width: 600px;margin-top:25px; margin-right: auto;  margin-left: auto;">
+        <label class="layui-form-label">文章标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" id="inputtitle" th:value="${myblogs.title}" lay-verify="required"
+                   autocomplete="off" placeholder="请输入标题"
+                   class="layui-input">
+        </div>
+    </div>
+<!--    内容-->
+    <div id="editor">
+    <textarea style="display:none;" name="content" id="contentarea" th:text="${myblogs.content}">
+    </textarea>
+    </div>
+    <div class="layui-input-block" style="text-align:center">
+        <button class="layui-btn" type="button" lay-filter="formDemo" id="editbutton">立即修改</button>
+    </div>
+
+</form>
+</body>
+<script type="text/javascript">
+<!--    初始化编辑器-->
+    $(function () {
+        var editor = editormd("editor", {
+            width: "80%",
+            height: "450",
+            path: "../static/editormd/lib/",
+        });
+    });
+    //初始化layui模块
+    layui.use(['element', 'layer', 'util', 'table', 'jquery'], function () {
+        var element = layui.element
+            , layer = layui.layer//弹出层
+            , util = layui.util
+            , table = layui.table//初始化table模块
+            , $ = layui.$;//初始化jquery
+        //监听搜索按钮的点击事件，由于ajax不会改变地址栏的值，所以发送成功之后改变地址栏的值
+        $("#editbutton").click(function () {
+            var url="/Blog";
+            $.ajax({
+                url: "/Blog",
+                type: "put",
+                async:false,
+                // 获取表单的值，然后提交，一定要写，不然后台收不到值
+                data: {
+                    title: $("#inputtitle").val(),
+                    content: $("#contentarea").val(),
+                    id: $("#id").val(),
+                },
+                success: function (data) {
+                    layer.confirm('修改成功！是否前往文章列表？', {icon: 1, title:'提示'}, function(index){
+                        location.href =url;
+                        layer.close(index);
+                    });
+                }
+            });
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>+PLUS+</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css"/>
+    <script src="../static/js/jQuery.js"></script>
+    <script src="../static/layui/layui.js"></script>
+</head>
+<body>
+<!--导航栏-->
+<ul class="layui-nav" style="background-color: #151313">
+    <li class="layui-nav-item" style="font-weight:bold"><a href="/admin">写篇文章？</a></li>
+</ul>
+<div class="layui-container" style="margin-top:10px ">
+    <div class="layui-row">
+        <!--左侧容器-->
+        <div class="layui-col-md3 layui-col-md-offset1">
+            <!--简介卡片-->
+            <div class="layui-card" style="background-color:rgba(0,0,0,0.03)">
+                <!--卡片头部-->
+                <div class="layui-card-header" style="font-size: 20px;font-weight: bold">skill comes from practice
+                </div>
+                <!--卡片主要部分-->
+                <div class="layui-card-body" style="text-align: center">
+                    <div style="font-size: 26px;font-weight: bold">HM</div>
+                    <div style="margin-top: 6px;font-size: 15px">独立开发的博客，虽然功能不多，但是个从0到1的过程...</div>
+                    <div style="margin-top: 8px">
+                        <i class="layui-icon layui-icon-face-smile" style="font-size: 30px; color: #000000;"></i>
+                    </div>
+                    <!--分割线-->
+                    <hr class="layui-border-black">
+                    <!--图标-->
+                    <div style="margin-top: 16px">
+                        <i class="layui-icon layui-icon-login-qq"
+                           style="font-size: 30px; color: #000000;"></i>
+                        <i class="layui-icon layui-icon-login-wechat"
+                           style="font-size: 30px; color: #000000;"></i>
+                        <i class="layui-icon layui-icon-login-weibo"
+                           style="font-size: 30px; color: #000000;"></i>
+                    </div>
+                    <div style="margin-top: 16px"><a href="https://github.com/wohll"
+                                                     style="font-size: 26px; color: #000000;">Github</a></div>
+                </div>
+            </div>
+        </div>
+        <!--右侧容器，文章流-->
+        <div class="layui-col-md6 layui-col-md-offset1" id="LAY_container" style="background-color:rgba(0,0,0,0.03)">
+            <!--单个文章卡片-->
+
+            <div class="articlelist" th:each="list:${myblogs}" style="padding: 12px">
+                <div style="display: none" id="id" th:text="${list.id}"></div>
+                <a th:href="@{'/article/'+${list.id}}">
+                    <div th:text="${list.title}" id="title" style="font-size: 25px;font-weight: bold">sdgfsdfa
+                    </div>
+                </a>
+                <div th:text="${#strings.abbreviate(list.content,118)}" id="content"
+                     style="font-size: 16px;margin-top:6px"></div>
+                <div th:text="${#dates.format(list.time, 'yyyy-MM-dd HH:mm')}"
+                     style="font-size: 15px;margin-top:8px">&nbsp2:06
+                </div>
+                <hr class="layui-border-black">
+            </div>
+        </div>
+    </div>
+</div>
+<div></div>
+</body>
+<script>
+<!--页面加载完成发送获取全部文章的请求-->
+    $(document).ready(function () {
+        $.ajax({
+            // url
+            url: '/',
+            // 请求类型
+            type: 'GET',
+            // 成功的回调
+            success: function (data) {
+                layer.msg("欢迎")
+            }
+        })
+    });
+</script>
+<script>
+    layui.use(function () {
+        var layer = layui.layer,
+            form = layui.form,
+            element = layui.element,
+            util = layui.util,
+            $ = layui.$,
+            flow = layui.flow,
+            laypage = layui.laypage;
+    });
+</script>
+</html>

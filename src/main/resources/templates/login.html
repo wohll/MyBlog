@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css"/>
+    <script src="../static/js/jQuery.js"></script>
+    <script src="../static/layui/layui.js"></script>
+</head>
+<body>
+<div style="padding: 20px;width: 350px;height: 230px;background-color: #c4c4c4;position: absolute;
+top: 50%;
+left: 50%;
+margin-top: -175px;
+margin-left: -175px;">
+    <!--表单-->
+    <form class="layui-form" action="/logining" method="POST" style="text-align: center">
+        <div style="font-size: 26px;padding: 10px">登录</div>
+        <span style="color: red;font-size: 16px" th:text="${login_msg}"></span>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" required lay-verify="required" placeholder="请输入账号"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码:</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <button class="layui-btn" type="submit">登录</button>
+    </form>
+</div>
+
+</body>
+</html>

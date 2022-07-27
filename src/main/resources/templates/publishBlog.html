@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布文章</title>
+    <link rel="stylesheet" href="../static/editormd/css/editormd.css" />
+    <link rel="stylesheet" href="../static/layui/css/layui.css" />
+    <script src="../static/js/jQuery.js"></script>
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/editormd/editormd.min.js"></script>
+</head>
+<body>
+<!--表单
+post方法，传入/Blog中去-->
+<form class="layui-form" lay-filter="publish" id="inputtitle">
+    <a href="/Blog" class="layui-btn">返回文章列表</a>
+    <div class="layui-form-item" style="width: 600px;margin-top:25px; margin-right: auto;  margin-left: auto;">
+        <label class="layui-form-label">文章标题</label>
+        <div class="layui-input-block" >
+            <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+<!--    editor.md区域-->
+<div id="editor">
+    <textarea style="display:none;" name="content" id="contentarea" >
+    </textarea>
+</div>
+    <div class="layui-input-block" style="text-align:center">
+        <button class="layui-btn" type="button" lay-filter="formDemo" id="editbutton">立即提交</button>
+    </div>
+</form>
+
+</body>
+<script type="text/javascript">
+    <!--    初始化editor.md,必须放在开头，不然不生效-->
+    $(function() {
+        var editor = editormd("editor", {
+            width  : "80%",
+            height : "450",
+            path   : "../static/editormd/lib/",
+
+        });
+    });
+    layui.use(['form', 'layer',  'jquery'], function(){
+        var form = layui.form,
+            layer = layui.layer
+        $("#editbutton").click(function () {
+            var url="/Blog";
+            $.ajax({
+                url: "/Blog",
+                type: "post",
+                async:true,
+                data: {
+                    title: $("#inputtitle").val(),
+                    content: $("#contentarea").val(),
+                },
+                success: function (data) {
+                    layer.confirm('发布成功！是否前往文章列表？', {icon: 1, title:'提示'}, function(index){
+                        location.href =url;
+                        layer.close(index);
+                    });
+                }
+            });
+        })
+    });
+
+
+</script>
+</html>

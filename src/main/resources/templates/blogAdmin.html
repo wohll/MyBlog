@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <link rel="stylesheet" href="../static/editormd/css/editormd.css"/>
+    <link href="../static/layui/css/layui.css" rel="stylesheet">
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/js/jQuery.js"></script>
+    <script src="../static/editormd/editormd.min.js"></script>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-green">博客管理系统</div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <!-- 移动端显示 -->
+            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+                <i class="layui-icon layui-icon-spread-left"></i>
+            </li>
+
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                <a href="javascript:;">
+                    欢迎您，这里可以退出登录
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="logout">注销登录</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item"><a href="/Blog">全部文章</a></li>
+                <li class="layui-nav-item"><a href="/publishBlog">发布文章</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <input type="text" name="id" id="search-input" lay-verify="required" autocomplete="off"
+                           class="layui-input" placeholder="请输入要搜索的文章id">
+                </div>
+                <div class="layui-form-mid" style="padding: 0!important;">
+                    <button type="button" class="layui-btn layui-btn-normal" id="search">搜索</button>
+                </div>
+            </div>
+
+            <!-- 文章列表-->
+            <table class="layui-table" lay-filter="table" lay-data="{cellMinWidth: 80, page: true}">
+                <thead>
+                <tr>
+                    <th lay-data="{field:'id', align: 'center', width:80}">文章id</th>
+                    <th lay-data="{field:'time', align: 'center', width:200}">发布时间</th>
+                    <th lay-data="{field:'title', align: 'center', width:300,}">标题</th>
+                    <th lay-data="{field:'content', align: 'center', width:300,}">内容</th>
+                    <th lay-data="{field:'option',width: 160, align: 'center', toolbar: '#barDemo'}">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--遍历数据得到文章列表-->
+                <tr th:each="list:${myblogs}">
+                    <td th:text="${list.id}"></td>
+                    <td th:text="${#dates.format(list.time, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${list.title}"></td>
+                    <td th:text="${list.content}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    //初始化用到的layui模块，不然无法使用各个模块
+    layui.use(['element', 'layer', 'util', 'table', 'jquery'], function () {
+        var element = layui.element
+            , layer = layui.layer//弹出层
+            , util = layui.util
+            , table = layui.table//初始化table模块
+            , $ = layui.$;//初始化jquery
+        //头部事件
+        util.event('lay-header-event', {
+            //左侧菜单事件
+            menuLeft: function (othis) {
+                layer.msg('展开左侧菜单的操作', {icon: 0});
+            }
+            ,
+        }),
+            //监听搜索按钮的点击事件，由于ajax不会改变地址栏的值，所以发送成功之后改变地址栏的值
+            $("#search").click(function () {
+                var s = $("#search-input").val();//s接收input输入的内容
+                var url="/Blog/" + s;
+                $.ajax({
+                    url: "/Blog/" + s,//获取id拼接请求地址
+                    type: "get",
+                    success: function (data) {
+                        location.href =url;
+                    }
+                });
+            })
+        //触发单元格工具（也就是编辑和删除）事件
+        table.on('tool(table)', function (obj) { // 双击 toolDouble
+            var data = obj.data;//获取每行的数据，后面获取id来拼接请求地址
+            if (obj.event === 'delete') {
+                layer.confirm('确认要删除吗？删除后不可恢复！', function (index) {
+                    $.ajax({
+                        url: "/Blog/" + data.id,//获取id拼接请求地址
+                        type: "delete",
+                        success: function (data) {
+                            layer.msg('删除成功');//发送成功显示的信息
+                            location.reload();//刷新页面
+                        }
+                    });
+                    layer.close(blogAdmin);//关闭弹出层
+                });
+            } else if (obj.event === 'edit') {
+               //点击编辑时，根据当前行id值，搜索文章，然后拼接请求
+                var url="/editBlog/" + data.id;
+                $.ajax({
+                    url: url,//获取id拼接请求地址
+                    type: "get",
+                    success: function (data) {
+                        location.href =url;
+                    }
+                });
+            }
+            ;
+        });
+    });
+</script>
+<script type="text/html" id="barDemo">
+<!--    操作行的两个选项-->
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+</script>
+</html>

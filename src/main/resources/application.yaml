@@ -1,0 +1,30 @@
+#spring.mvc.view.prefix=/WEB-INF/jsp/
+#spring.mvc.view.suffix=.jsp
+spring:
+#  配置静态资源路径
+#  mvc:
+#    static-path-pattern: classpath:/static/**
+    #   Druid数据源配置
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://localhost:3306/db1?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 自定义数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      # 配置获取连接等待超时的时间
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存时间
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: false
+      test-on-borrow: false
+      test-on-return: false
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

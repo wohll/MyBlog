@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.dao.BlogDao">
+    <select id="selectAllBlog" resultType="com.myweb.entity.Blog">
+        select id, time, title, content
+        from tb_blog;
+    </select>
+    <select id="limitBlog" resultType="com.myweb.entity.Blog">
+        select id, time, title, content
+        from tb_blog
+            limit #{start},16;
+    </select>
+    <select id="selectBlogById" resultType="com.myweb.entity.Blog">
+        select id, time, title, content
+        from tb_blog
+        where id=#{id};
+    </select>
+    <delete id="deleteBlogById">
+        delete
+        from tb_blog
+        where id = #{id};
+    </delete>
+    <insert id="addBlog">
+        insert into tb_blog(title, content)
+        values (#{title}, #{content});
+    </insert>
+    <update id="updateBlogById">
+        update tb_blog
+        set title=#{title},
+            content=#{content}
+        where id = #{id};
+    </update>
+</mapper>
